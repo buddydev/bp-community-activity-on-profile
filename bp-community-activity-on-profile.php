@@ -4,11 +4,11 @@
  * Author: Brajesh Singh
  * Author URI: http://buddydev.com/members/sbrajesh/
  * Plugin URI: http://buddydev.com/plugins/bp-community-activity/
- * Version:1.0.1
+ * Version:1.0.2
  * Description: It shows all the commnity activity on the profile of a user if the user is logged in
  * Credits: Greg for the Idea
  * License: GPL
- * Last Updated: 15th June, 2011
+ * Last Updated: 17th August, 2011
  *  
  * 
 */
@@ -40,7 +40,7 @@ function bp_add_community_activity_to_profile_nav(){
    if(!is_user_logged_in())
        return;
    
-   $activity_link = bp_core_get_user_domain(bp_loggedin_user_id()) . $bp->activity->slug . '/';
+   $activity_link = bp_core_get_user_domain(bp_loggedin_user_id()) . bp_get_activate_slug() . '/';
    //add to user activity subnav if it is logged in users profile
    bp_core_new_subnav_item( array( 'name' => __( 'All Activity', 'bpcomac' ), 'slug' => BPCOM_ACTIVITY_SLUG, 'parent_url' => $activity_link, 'parent_slug' => $bp->activity->slug, 'screen_function' => 'bp_community_activity_screen', 'position' => 5,'user_has_access'=>  bp_is_my_profile() ) );
 
@@ -61,7 +61,7 @@ function bp_community_activity_screen(){
 function bp_community_ajax_filter($query_string, $object ){
     global $bp;
     //if user is logged in & current action is community on profile tab
-    if(bp_is_home()&&$bp->current_component==$bp->activity->slug&&$bp->current_action==BPCOM_ACTIVITY_SLUG){
+    if(bp_is_my_profile()&&  bp_is_activity_component()&&$bp->current_action==BPCOM_ACTIVITY_SLUG){
         $comm_query= "user_id=0&scope=0";//just make it so it prints directory :)
         $query_string= $query_string?$query_string."&".$comm_query:$comm_query;
 
@@ -76,7 +76,7 @@ add_filter( 'bp_ajax_querystring', "bp_community_ajax_filter",12,2);
 add_filter("bp_activity_delete_link","bpcom_fix_delete_link",10,2);
 function bpcom_fix_delete_link($del_link,$activity){
     global $bp;
-       if(bp_is_home()&&$bp->current_component==$bp->activity->slug&&$bp->current_action==BPCOM_ACTIVITY_SLUG){
+       if(bp_is_my_profile()&&  bp_is_activity_component()&&$bp->current_action==BPCOM_ACTIVITY_SLUG){
            //let us apply our mod
            if ( ( is_user_logged_in() && $activity->user_id == $bp->loggedin_user->id ) || $bp->loggedin_user->is_super_admin )
 		return $del_link;
