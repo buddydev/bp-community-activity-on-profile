@@ -4,11 +4,11 @@
  * Author: Brajesh Singh
  * Author URI: http://buddydev.com/members/sbrajesh/
  * Plugin URI: http://buddydev.com/plugins/bp-community-activity/
- * Version:1.0.2
+ * Version:1.0.3
  * Description: It shows all the commnity activity on the profile of a user if the user is logged in
  * Credits: Greg for the Idea
  * License: GPL
- * Last Updated: 17th August, 2011
+ * Last Updated: 23rd August, 2011
  *  
  * 
 */
@@ -40,7 +40,7 @@ function bp_add_community_activity_to_profile_nav(){
    if(!is_user_logged_in())
        return;
    
-   $activity_link = bp_core_get_user_domain(bp_loggedin_user_id()) . bp_get_activate_slug() . '/';
+   $activity_link = bp_core_get_user_domain(bp_loggedin_user_id()) . bp_get_activity_slug() . '/';
    //add to user activity subnav if it is logged in users profile
    bp_core_new_subnav_item( array( 'name' => __( 'All Activity', 'bpcomac' ), 'slug' => BPCOM_ACTIVITY_SLUG, 'parent_url' => $activity_link, 'parent_slug' => $bp->activity->slug, 'screen_function' => 'bp_community_activity_screen', 'position' => 5,'user_has_access'=>  bp_is_my_profile() ) );
 
