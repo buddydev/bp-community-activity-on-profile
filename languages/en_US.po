@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bp-community-activity\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-06-15 16:27+0530\n"
-"PO-Revision-Date: 2011-06-15 18:59+0530\n"
+"PO-Revision-Date: 2012-01-27 17:00+0530\n"
 "Last-Translator: Brajesh Singh <brajesh@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -16,5 +16,5 @@ msgstr ""
 
 #: /var/www/bp/1.2/test/wp3ms/wp-content/plugins/bp-community-activity-on-profile/bp-community-activity-on-profile.php:42
 msgid "All Activity"
-msgstr "Testing Activity"
+msgstr ""
 
