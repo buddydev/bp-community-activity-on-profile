@@ -1,16 +1,13 @@
 <?php
 /*
  * Plugin Name: Community Activity On profile
- * Author: Brajesh Singh
- * Author URI: http://buddydev.com/members/sbrajesh/
- * Plugin URI: http://buddydev.com/plugins/bp-community-activity/
- * Version:1.0.3
- * Description: It shows all the commnity activity on the profile of a user if the user is logged in
+ * Author: BuddyDev
+ * Author URI: https://buddydev.com/
+ * Plugin URI: https://buddydev.com/plugins/bp-community-activity/
+ * Version: 1.0.4
+ * Description: It shows all the community activity on the profile of a user if the user is logged in
  * Credits: Greg for the Idea
  * License: GPL
- * Last Updated: 23rd August, 2011
- *
- *
 */
 
 if ( ! defined( 'BPCOM_ACTIVITY_SLUG' ) ) {
@@ -23,8 +20,9 @@ function bp_com_activity_load_textdomain() {
 }
 
 add_action( 'bp_init', 'bp_com_activity_load_textdomain', 2 );
-
-//add all activity to nav
+/**
+ * Add All activity nav to the user activities.
+ */
 function bp_add_community_activity_to_profile_nav() {
 
 	if ( ! is_user_logged_in() || ! bp_is_active( 'activity' ) ) {
@@ -66,10 +64,9 @@ function bp_community_activity_screen() {
  * @return string
  */
 function bp_community_ajax_filter( $query_string, $object ) {
-	global $bp;
-	//if user is logged in & current action is community on profile tab
+	// if user is logged in & current action is community on profile tab.
 	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
-		$comm_query   = 'user_id=0&scope=0';//just make it so it prints directory :)
+		$comm_query   = 'user_id=0&scope=0';// just make it so it prints directory :)
 		$query_string = $query_string ? $query_string . '&' . $comm_query : $comm_query;
 	}
 
@@ -87,7 +84,6 @@ add_filter( 'bp_ajax_querystring', 'bp_community_ajax_filter', 12, 2 );
  * @return string
  */
 function bpcom_fix_delete_link( $del_link, $activity ) {
-	global $bp;
 
 	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
 		//let us apply our mod
