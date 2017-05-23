@@ -9,8 +9,8 @@
  * Credits: Greg for the Idea
  * License: GPL
  * Last Updated: 23rd August, 2011
- *  
- * 
+ *
+ *
 */
 
 if ( ! defined( 'BPCOM_ACTIVITY_SLUG' ) ) {
@@ -18,23 +18,11 @@ if ( ! defined( 'BPCOM_ACTIVITY_SLUG' ) ) {
 }
 /*localization*/
 function bp_com_activity_load_textdomain() {
-	$locale = apply_filters( 'bp_com_activity_load_textdomain_get_locale', get_locale() );
 
-
-	// if load .mo file
-	if ( ! empty( $locale ) ) {
-		$mofile_default = sprintf( '%slanguages/%s.mo', plugin_dir_path( __FILE__ ), $locale );
-
-		$mofile = apply_filters( 'bp_com_activity_load_textdomain_mofile', $mofile_default );
-
-		if ( file_exists( $mofile ) ) {
-			// make sure file exists, and load it
-			load_textdomain( "bpcomac", $mofile );
-		}
-	}
+	load_plugin_textdomain( 'bp-community-activity-on-profile', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
-add_action( 'bp_loaded', 'bp_com_activity_load_textdomain', 2 );
+add_action( 'bp_init', 'bp_com_activity_load_textdomain', 2 );
 
 //add all activity to nav
 function bp_add_community_activity_to_profile_nav() {
@@ -43,11 +31,11 @@ function bp_add_community_activity_to_profile_nav() {
 		return;
 	}
 
-	$slug = bp_get_activity_slug();
-	$activity_link =bp_loggedin_user_domain() . $slug() . '/';
+	$slug          = bp_get_activity_slug();
+	$activity_link = bp_loggedin_user_domain() . $slug . '/';
 	// add to user activity subnav if it is logged in users profile.
 	bp_core_new_subnav_item( array(
-		'name'            => __( 'All Activity', 'bpcomac' ),
+		'name'            => __( 'All Activity', 'bp-community-activity-on-profile' ),
 		'slug'            => BPCOM_ACTIVITY_SLUG,
 		'parent_url'      => $activity_link,
 		'parent_slug'     => $slug,
@@ -87,6 +75,7 @@ function bp_community_ajax_filter( $query_string, $object ) {
 
 	return $query_string;
 }
+
 add_filter( 'bp_ajax_querystring', 'bp_community_ajax_filter', 12, 2 );
 
 /**
@@ -111,4 +100,5 @@ function bpcom_fix_delete_link( $del_link, $activity ) {
 
 	return $del_link;
 }
+
 add_filter( "bp_activity_delete_link", "bpcom_fix_delete_link", 10, 2 );
