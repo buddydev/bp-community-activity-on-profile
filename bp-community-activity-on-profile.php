@@ -43,24 +43,25 @@ function bp_add_community_activity_to_profile_nav() {
 		return;
 	}
 
-	$activity_link = bp_core_get_user_domain( bp_loggedin_user_id() ) . bp_get_activity_slug() . '/';
-	//add to user activity subnav if it is logged in users profile
-	bp_core_new_subnav_item( array( 'name'            => __( 'All Activity', 'bpcomac' ),
-	                                'slug'            => BPCOM_ACTIVITY_SLUG,
-	                                'parent_url'      => $activity_link,
-	                                'parent_slug'     => $bp->activity->slug,
-	                                'screen_function' => 'bp_community_activity_screen',
-	                                'position'        => 5,
-	                                'user_has_access' => bp_is_my_profile()
+	$activity_link =bp_loggedin_user_domain() . bp_get_activity_slug() . '/';
+	// add to user activity subnav if it is logged in users profile.
+	bp_core_new_subnav_item( array(
+		'name'            => __( 'All Activity', 'bpcomac' ),
+		'slug'            => BPCOM_ACTIVITY_SLUG,
+		'parent_url'      => $activity_link,
+		'parent_slug'     => $bp->activity->slug,
+		'screen_function' => 'bp_community_activity_screen',
+		'position'        => 5,
+		'user_has_access' => bp_is_my_profile()
 	) );
 
 
 }
 
 add_action( 'bp_activity_setup_nav', 'bp_add_community_activity_to_profile_nav' );
-//just load the home page
-function bp_community_activity_screen() {
 
+// just load the home page
+function bp_community_activity_screen() {
 	do_action( 'bp_community_activity_screen' );
 	bp_core_load_template( apply_filters( 'bp_activity_template_community_activity', 'members/single/home' ) );
 }
@@ -68,29 +69,41 @@ function bp_community_activity_screen() {
 //filter ajax request
 
 
-//load te,mplate
-//do the magic here by filtering
+/**
+ * Filter query string to force to show all activities
+ *
+ * @param string $query_string
+ * @param $object
+ *
+ * @return string
+ */
 function bp_community_ajax_filter( $query_string, $object ) {
 	global $bp;
 	//if user is logged in & current action is community on profile tab
-	if ( bp_is_my_profile() && bp_is_activity_component() && $bp->current_action == BPCOM_ACTIVITY_SLUG ) {
+	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
 		$comm_query   = "user_id=0&scope=0";//just make it so it prints directory :)
 		$query_string = $query_string ? $query_string . "&" . $comm_query : $comm_query;
-
 	}
 
 	return $query_string;
 }
 
-add_filter( 'bp_ajax_querystring', "bp_community_ajax_filter", 12, 2 );
+add_filter( 'bp_ajax_querystring', 'bp_community_ajax_filter', 12, 2 );
 
-//fix delete link on profile activity
-add_filter( "bp_activity_delete_link", "bpcom_fix_delete_link", 10, 2 );
+/**
+ * Fix delete link on profile activity
+ *
+ * @param string $del_link
+ * @param BP_Activity_Activity $activity
+ *
+ * @return string
+ */
 function bpcom_fix_delete_link( $del_link, $activity ) {
 	global $bp;
-	if ( bp_is_my_profile() && bp_is_activity_component() && $bp->current_action == BPCOM_ACTIVITY_SLUG ) {
+
+	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
 		//let us apply our mod
-		if ( ( is_user_logged_in() && $activity->user_id == $bp->loggedin_user->id ) || $bp->loggedin_user->is_super_admin ) {
+		if ( bp_activity_user_can_delete( $activity ) ) {
 			return $del_link;
 		}
 
@@ -100,4 +113,4 @@ function bpcom_fix_delete_link( $del_link, $activity ) {
 	return $del_link;
 }
 
-?>
+add_filter( "bp_activity_delete_link", "bpcom_fix_delete_link", 10, 2 );
