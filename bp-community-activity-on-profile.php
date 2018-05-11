@@ -4,11 +4,15 @@
  * Author: BuddyDev
  * Author URI: https://buddydev.com/
  * Plugin URI: https://buddydev.com/plugins/bp-community-activity/
- * Version: 1.0.4
+ * Version: 1.0.5
  * Description: It shows all the community activity on the profile of a user if the user is logged in
  * Credits: Greg for the Idea
  * License: GPL
 */
+// no direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 if ( ! defined( 'BPCOM_ACTIVITY_SLUG' ) ) {
 	define( 'BPCOM_ACTIVITY_SLUG', 'all-activity' );
@@ -99,3 +103,19 @@ function bpcom_fix_delete_link( $del_link, $activity ) {
 }
 
 add_filter( 'bp_activity_delete_link', 'bpcom_fix_delete_link', 10, 2 );
+
+/**
+ * Show post form on all activity screen.
+ */
+function bpcom_show_post_form_if_needed() {
+	if ( ! bp_is_my_profile() ) {
+		return;
+	}
+
+	if ( ! did_action( 'bp_after_activity_post_form' ) && bp_is_user_activity() && bp_is_current_action( BPCOM_ACTIVITY_SLUG )  ) {
+		bp_get_template_part( 'activity/post-form' );
+	}
+
+}
+add_action( 'bp_after_member_activity_post_form', 'bpcom_show_post_form_if_needed' );
+
