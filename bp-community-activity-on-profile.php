@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Plugin Name: Community Activity On profile
  * Author: BuddyDev
  * Author URI: https://buddydev.com/
@@ -13,13 +13,16 @@
 if ( ! defined( 'BPCOM_ACTIVITY_SLUG' ) ) {
 	define( 'BPCOM_ACTIVITY_SLUG', 'all-activity' );
 }
-/*localization*/
-function bp_com_activity_load_textdomain() {
 
+/**
+ * Load translation.
+ */
+function bp_com_activity_load_textdomain() {
 	load_plugin_textdomain( 'bp-community-activity-on-profile', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
 add_action( 'bp_init', 'bp_com_activity_load_textdomain', 2 );
+
 /**
  * Add All activity nav to the user activities.
  */
@@ -39,54 +42,52 @@ function bp_add_community_activity_to_profile_nav() {
 		'parent_slug'     => $slug,
 		'screen_function' => 'bp_community_activity_screen',
 		'position'        => 5,
-		'user_has_access' => bp_is_my_profile()
+		'user_has_access' => bp_is_my_profile(),
 	) );
 
 }
 
 add_action( 'bp_activity_setup_nav', 'bp_add_community_activity_to_profile_nav' );
 
-// just load the home page
+/**
+ * Load home page.
+ */
 function bp_community_activity_screen() {
 	do_action( 'bp_community_activity_screen' );
 	bp_core_load_template( apply_filters( 'bp_activity_template_community_activity', 'members/single/home' ) );
 }
 
-//filter ajax request
-
-
 /**
  * Filter query string to force to show all activities
  *
- * @param string $query_string
- * @param $object
+ * @param string $query_string.
+ * @param string $object object.
  *
  * @return string
  */
 function bp_community_ajax_filter( $query_string, $object ) {
 	// if user is logged in & current action is community on profile tab.
 	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
-		$comm_query   = 'user_id=0&scope=0';// just make it so it prints directory :)
+		$comm_query   = 'user_id=0&scope=0'; // just make it so it prints directory :).
 		$query_string = $query_string ? $query_string . '&' . $comm_query : $comm_query;
 	}
 
 	return $query_string;
 }
-
 add_filter( 'bp_ajax_querystring', 'bp_community_ajax_filter', 12, 2 );
 
 /**
  * Fix delete link on profile activity
  *
- * @param string $del_link
- * @param BP_Activity_Activity $activity
+ * @param string               $del_link delete link.
+ * @param BP_Activity_Activity $activity activity object.
  *
  * @return string
  */
 function bpcom_fix_delete_link( $del_link, $activity ) {
 
 	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
-		//let us apply our mod
+		// let us apply our mod.
 		if ( bp_activity_user_can_delete( $activity ) ) {
 			return $del_link;
 		}
@@ -97,4 +98,4 @@ function bpcom_fix_delete_link( $del_link, $activity ) {
 	return $del_link;
 }
 
-add_filter( "bp_activity_delete_link", "bpcom_fix_delete_link", 10, 2 );
+add_filter( 'bp_activity_delete_link', 'bpcom_fix_delete_link', 10, 2 );
