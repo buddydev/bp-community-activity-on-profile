@@ -70,15 +70,56 @@ function bp_community_activity_screen() {
  * @return string
  */
 function bp_community_ajax_filter( $query_string, $object ) {
+
 	// if user is logged in & current action is community on profile tab.
 	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
-		$comm_query   = 'user_id=0&scope=0'; // just make it so it prints directory :).
+		$comm_query = 'user_id=0';
+
+		if ( defined('BP_PLATFORM_VERSION') ) {
+			$comm_query .= '&scope=public,just-me,mentions,groups';
+		} else {
+			$comm_query .= '&scope=0';
+		}
+
 		$query_string = $query_string ? $query_string . '&' . $comm_query : $comm_query;
 	}
 
 	return $query_string;
 }
 add_filter( 'bp_ajax_querystring', 'bp_community_ajax_filter', 12, 2 );
+
+/**
+ * Filter group scope args to remove user_id
+ *
+ * @param array $retval Scope args.
+ *
+ * @return array
+ */
+function bp_community_bb_groups_filter_activity_scope( $retval ) {
+
+	if ( ! defined( 'BP_PLATFORM_VERSION' ) ) {
+		return $retval;
+	}
+
+	if ( bp_is_my_profile() && bp_is_activity_component() && bp_is_current_action( BPCOM_ACTIVITY_SLUG ) ) {
+
+		foreach ( (array) $retval as $retval_index => $query_args ) {
+			$retval_user_args = wp_list_filter( (array) $query_args, array( 'column' => 'user_id' ) );
+
+			if ( empty( $retval_user_args ) ) {
+				continue;
+			}
+
+			foreach ( $retval_user_args as $index => $user_args ) {
+				unset( $retval[$retval_index][$index] );
+			}
+		}
+	}
+
+	return $retval;
+}
+
+add_filter( 'bp_activity_set_groups_scope_args', 'bp_community_bb_groups_filter_activity_scope', 15 );
 
 /**
  * Fix delete link on profile activity
@@ -118,4 +159,6 @@ function bpcom_show_post_form_if_needed() {
 
 }
 add_action( 'bp_after_member_activity_post_form', 'bpcom_show_post_form_if_needed' );
+
+
 
