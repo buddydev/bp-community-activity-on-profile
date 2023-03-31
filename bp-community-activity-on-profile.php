@@ -4,7 +4,7 @@
  * Author: BuddyDev
  * Author URI: https://buddydev.com/
  * Plugin URI: https://buddydev.com/plugins/bp-community-activity/
- * Version: 1.0.5
+ * Version: 1.0.6
  * Description: It shows all the community activity on the profile of a user if the user is logged in
  * Credits: Greg for the Idea
  * License: GPL

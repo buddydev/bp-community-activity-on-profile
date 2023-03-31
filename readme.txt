@@ -3,7 +3,7 @@ Contributors: uddydev,sbrajesh
 Tags: buddypress, community,activity
 Requires at least: 4.0
 Tested up to: 4.7.5
-Stable tag: 1.0.4
+Stable tag: 1.0.6
 
 Shows the community activity on user profile. User does not need to visit the activity directory for sitewide updates
 == Description ==
@@ -19,6 +19,12 @@ It helps to streamline the social network based on BuddyPress.
 Please have a look at my blog post for details
 
 == Changelog ==
+= 1.0.6 =
+* Add BuddyBoss platform support
+
+= 1.0.5 =
+* Add post form on all activity screen
+
 = 1.0.4 =
 * Cleanup
 
